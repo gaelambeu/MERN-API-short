@@ -2,10 +2,10 @@ import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
 dotenv.config();
-import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import helmet from 'helmet';
+import connectDB from './config/connectDb.js';
 
 
 
@@ -26,5 +26,12 @@ app.get("/", (request, response)=> {
     ///server to client 
     response.json({
         message : "Server is running " + process.env.PORT
+    })
+})
+
+
+connectDB().then(()=> {
+    app.listen(process.env.PORT, () => {
+        console.log("Server is running", process.env.PORT);
     })
 })
