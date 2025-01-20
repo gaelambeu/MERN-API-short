@@ -3,6 +3,7 @@ import bcryptjs from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { sendEmail } from "../config/emailService.js";
 import sendEmailFun from "../config/sendEmail.js";
+import VerificationEmail from "../utils/verifyEmailTemplate.js";
 
 export async function registerUserController(request, response){
     try {
@@ -37,7 +38,9 @@ export async function registerUserController(request, response){
         user = new UserModel ({
             email: email,
             password: hashPassword,
-            name : name
+            name : name,
+            otp: verifyCode,
+            otpExpires: Date.now() + 600000
         })
 
         await user.save()
@@ -48,7 +51,8 @@ export async function registerUserController(request, response){
         const verifyEmail = await sendEmailFun({
             sendTo: email,
             subject: "Verify email from Ecommerce App",
-            html: ''
+            text: "",
+            html: VerificationEmail(name, verifyCode)
         })
 
     } catch (error) {
